@@ -428,6 +428,31 @@
         };
 
         footer.appendChild(catLink);
+
+        // Add eversion link
+        const evertLink = $('a',
+            {
+                'href': '#',
+                'id': 'evert-link'
+            },
+            'Evert'
+        );
+
+        evertLink.onclick = function() {
+            document.body.classList.add('evert');
+
+            // Only want to animate hyperlinks in #content when eversion begins
+            const pageBorder = $('#page-border');
+            pageBorder.addEventListener('animationend', function() {
+                document.body.classList.remove('evert-begin');
+            });
+            document.body.classList.add('evert-begin');
+
+            footer.removeChild(evertLink);
+            return false;
+        }
+
+        footer.appendChild(evertLink);
     }
 
     function loadData(content, listedTags) {

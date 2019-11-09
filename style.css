@@ -191,6 +191,7 @@ a:hover {
     background: #fcfcf3;
     border: 1px solid #ccc;
     left: 2em;
+    opacity: 0;
     padding: 0.2em 0.4em;
     position: absolute;
     text-transform: lowercase;
@@ -277,5 +278,157 @@ footer ul li:last-child::after {
 
     100% {
         transform: rotate(360deg);
+    }
+}
+
+#evert-link {
+    bottom: 0;
+    color: #fbfbfb;
+    position: absolute;
+    right: 4em;
+    text-decoration: underline;
+    transition: .5s all;
+}
+
+#evert-link:hover {
+    color: #900;
+}
+
+body.evert {
+    animation: 5s evert-background ease-out, 5s evert-text ease-out;
+    background: #000;
+    color: #900;
+}
+
+.evert #page-border {
+    animation: 5s evert-page-border-color ease-out;
+    border-color: #900;
+}
+
+.evert #header-wrapper, .evert #footer-wrapper {
+    animation: 5s evert-wrapper-border-color ease-out;
+    border-color: #900;
+}
+
+.evert a {
+    animation: 5s evert-text;
+    color: #900;
+}
+
+.evert a:hover {
+    color: #c33;
+}
+
+.evert input {
+    animation: 5s evert-background ease-out,
+        5s evert-input-border-color ease-out,
+        5s evert-text ease-out;
+    background: #000;
+    border: 1px solid #900;
+    color: #900;
+}
+
+.evert h1 a {
+    background-image: url(header-everted.png);
+}
+
+.evert #cat-link img {
+    animation: 5s evert-invert ease-out;
+    filter: invert(1) brightness(.5) saturate(2);
+}
+
+.evert #content .copy-link {
+    animation: none;
+    font-size: .8em;
+    color: #722;
+}
+
+.evert-begin #content .copy-link {
+    animation: 5s evert-copy-link ease-out;
+    font-size: .8em;
+    color: #722;
+}
+
+.evert #content .copy-link:hover {
+    color: #c33;
+}
+
+.evert #content p .copy-span .popup {
+    background: #600;
+    border-collapse: #aaa;
+    color: #aaa;
+}
+
+@keyframes evert-background {
+    0% {
+        background: #fbfbfb;
+    }
+
+    10% {
+        background: #900;
+    }
+
+    100% {
+        background: #000;
+    }
+}
+
+@keyframes evert-page-border-color {
+    from {
+        border-color: #444;
+    }
+
+    to {
+        border-color: #900;
+    }
+}
+
+@keyframes evert-wrapper-border-color {
+    from {
+        border-color: #e3e3d3;
+    }
+
+    to {
+        border-color: #900;
+    }
+}
+
+@keyframes evert-text {
+    from {
+        color: #fbfbfb;
+    }
+
+    to {
+        color: #900;
+    }
+}
+
+@keyframes evert-copy-link {
+    from {
+        color: #fbfbfb;
+    }
+
+    to {
+        color: #722;
+    }
+}
+
+@keyframes evert-input-border-color {
+    from {
+        border-color: #000;
+    }
+
+    to {
+        border-color: #900;
+    }
+}
+
+@keyframes evert-invert {
+    from {
+        filter: invert(.5) brightness(1) saturate(1);
+    }
+
+    to {
+        filter: invert(1) brightness(.5) saturate(2);
     }
 }
