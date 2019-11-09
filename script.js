@@ -89,6 +89,257 @@
         return true;
     }
 
+    function createZalgoText(length) {
+        // https://jsfiddle.net/JKirchartz/wwckP/
+        const zalgoChars = [
+            // Above
+            [
+                '\u030d', // ̍
+                '\u030e', // ̎
+                '\u0304', // ̄
+                '\u0305', // ̅
+                '\u033f', // ̿
+                '\u0311', // ̑
+                '\u0306', // ̆
+                '\u0310', // ̐
+                '\u0352', // ͒
+                '\u0357', // ͗
+                '\u0351', // ͑
+                '\u0307', // ̇
+                '\u0308', // ̈
+                '\u030a', // ̊
+                '\u0342', // ͂
+                '\u0343', // ̓
+                '\u0344', // ̈́
+                '\u034a', // ͊
+                '\u034b', // ͋
+                '\u034c', // ͌
+                '\u0303', // ̃
+                '\u0302', // ̂
+                '\u030c', // ̌
+                '\u0350', // ͐
+                '\u0300', // ̀
+                '\u0301', // ́
+                '\u030b', // ̋
+                '\u030f', // ̏
+                '\u0312', // ̒
+                '\u0313', // ̓
+                '\u0314', // ̔
+                '\u033d', // ̽
+                '\u0309', // ̉
+                '\u0363', // ͣ
+                '\u0364', // ͤ
+                '\u0365', // ͥ
+                '\u0366', // ͦ
+                '\u0367', // ͧ
+                '\u0368', // ͨ
+                '\u0369', // ͩ
+                '\u036a', // ͪ
+                '\u036b', // ͫ
+                '\u036c', // ͬ
+                '\u036d', // ͭ
+                '\u036e', // ͮ
+                '\u036f', // ͯ
+                '\u033e', // ̾
+                '\u035b', // ͛
+                '\u0346', // ͆
+                '\u031a', // ̚
+                ''
+            ],
+            // Below
+            [
+                '\u0316', // ̖
+                '\u0317', // ̗
+                '\u0318', // ̘
+                '\u0319', // ̙
+                '\u031c', // ̜
+                '\u031d', // ̝
+                '\u031e', // ̞
+                '\u031f', // ̟
+                '\u0320', // ̠
+                '\u0324', // ̤
+                '\u0325', // ̥
+                '\u0326', // ̦
+                '\u0329', // ̩
+                '\u032a', // ̪
+                '\u032b', // ̫
+                '\u032c', // ̬
+                '\u032d', // ̭
+                '\u032e', // ̮
+                '\u032f', // ̯
+                '\u0330', // ̰
+                '\u0331', // ̱
+                '\u0332', // ̲
+                '\u0333', // ̳
+                '\u0339', // ̹
+                '\u033a', // ̺
+                '\u033b', // ̻
+                '\u033c', // ̼
+                '\u0345', // ͅ
+                '\u0347', // ͇
+                '\u0348', // ͈
+                '\u0349', // ͉
+                '\u034d', // ͍
+                '\u034e', // ͎
+                '\u0353', // ͓
+                '\u0354', // ͔
+                '\u0355', // ͕
+                '\u0356', // ͖
+                '\u0359', // ͙
+                '\u035a', // ͚
+                '\u0323', // ̣
+                ''
+            ],
+            // Middle
+            [
+                '\u0315', // ̕
+                '\u031b', // ̛
+                '\u0340', // ̀
+                '\u0341', // ́
+                '\u0358', // ͘
+                '\u0321', // ̡
+                '\u0322', // ̢
+                '\u0327', // ̧
+                '\u0328', // ̨
+                '\u0334', // ̴
+                '\u0335', // ̵
+                '\u0336', // ̶
+                '\u034f', // ͏
+                '\u035c', // ͜
+                '\u035d', // ͝
+                '\u035e', // ͞
+                '\u035f', // ͟
+                '\u0360', // ͠
+                '\u0362', // ͢
+                '\u0338', // ̸
+                '\u0337', // ̷
+                '\u0361', // ͡
+                '\u0489', // ҉
+                ''
+            ]
+        ];
+
+        // Returns a random integer in the range [0, n)
+        function randBelow(n) {
+            return Math.floor(Math.random() * n);
+        }
+
+        let zalgoText = '';
+
+        for (let i = 0; i < length; ++i) {
+            const charType = randBelow(zalgoChars.length);
+            const charIdx = randBelow(zalgoChars[charType].length);
+            zalgoText += zalgoChars[charType][charIdx];
+        }
+
+        return zalgoText;
+    }
+
+    // Split all child text nodes recursively into text nodes of length 1
+    function splitNodeText(node) {
+        for (let i = node.childNodes.length - 1; i >= 0; --i) {
+            let childNode = node.childNodes[i];
+
+            if (childNode.nodeType === Node.TEXT_NODE) {
+                while (childNode.nodeValue.length > 1) {
+                    childNode = childNode.splitText(1);
+                }
+            } else {
+                splitNodeText(childNode);
+            }
+        }
+    }
+
+    function zalgoifyNode(node) {
+        const ZALGO_DELAY = 66;
+
+        const zalgoIterations = Math.floor(Math.random() * 7) + 6;
+
+        if (node.classList.contains('undergoing-zalgo')) {
+            return;
+        }
+
+        const zalgoSpans = [];
+
+        for (let i = node.childNodes.length - 1; i >= 0; --i) {
+            const childNode = node.childNodes[i];
+
+            if (childNode.nodeType === Node.TEXT_NODE) {
+                const zalgoSpan = $(
+                    'span',
+                    { 'class': 'zalgo-text' }
+                );
+
+                zalgoSpans.push(zalgoSpan);
+
+                node.insertBefore(
+                    zalgoSpan,
+                    childNode
+                );
+            } else {
+                zalgoifyNode(childNode);
+            }
+        }
+
+        function updateZalgoSpans(n) {
+            node.classList.add('undergoing-zalgo');
+
+            if (n === 0) {
+                zalgoSpans.forEach(function(zalgoSpan) {
+                    if (zalgoSpan.parentNode) {
+                        zalgoSpan.parentNode.removeChild(zalgoSpan);
+                    }
+                });
+
+                node.classList.remove('undergoing-zalgo');
+
+                return;
+            }
+
+            zalgoSpans.forEach(function(zalgoSpan) {
+                zalgoSpan.textContent = createZalgoText(Math.floor(Math.random() * 5));
+            });
+
+            setTimeout(function() {
+                updateZalgoSpans(n - 1);
+            }, ZALGO_DELAY);
+        }
+
+        updateZalgoSpans(zalgoIterations);
+    }
+
+    function enableZalgoOnInteraction(els) {
+        for (let i = 0; i < els.length; ++i) {
+            const el = els[i];
+
+            splitNodeText(el);
+
+            el.onmouseover = function() {
+                zalgoifyNode(el);
+            };
+
+            // Don't overwite existing onclick handlers
+            el.addEventListener('click', function() {
+                zalgoifyNode(el);
+            })
+        }
+    }
+
+    function zalgoifyContent() {
+        enableZalgoOnInteraction(document.querySelectorAll('.zalgoable'));
+    }
+
+    function enableZalgo(content) {
+        content.enableZalgo();
+
+        // Enable zalgo on non-content elements
+        enableZalgoOnInteraction(
+            document.querySelectorAll('#nav a, footer h2, footer a')
+        );
+
+        zalgoifyContent();
+    }
+
     function getHash() {
         return decodeURI(location.hash.slice(1).toLowerCase());
     }
@@ -134,6 +385,10 @@
             'currentTitlesShown': null,
             'el': el,
             'titles': [],
+            'zalgoEnabled': false,
+            'enableZalgo': function() {
+                this.zalgoEnabled = true;
+            },
             'replaceWith': function() {
                 this.currentTitlesShown = null;
                 const els = arguments;
@@ -142,29 +397,33 @@
                     for (let i = 0; i < els.length; ++i) {
                         el.append(els[i]);
                     }
+
+                    if (contentContainer.zalgoEnabled) {
+                        zalgoifyContent();
+                    }
                 });
             },
             'showHelp': function() {
                 this.replaceWith(
-                    $('h2', 'Search for a title using the box to the right of the logo.'),
+                    $('h2', { 'class': 'zalgoable' }, 'Search for a title using the box to the right of the logo.'),
                     $('ul',
-                        $('li', 'Type part of a title or type the title number.'),
-                        $('li', 'Click ', $('span', { 'class': 'copy-link' }, '/title #'), ' to copy.'),
-                        $('li', 'The links below the logo will show you titles in that category.')
+                        $('li', { 'class': 'zalgoable' }, 'Type part of a title or type the title number.'),
+                        $('li', { 'class': 'zalgoable' }, 'Click ', $('span', { 'class': 'copy-link' }, '/title #'), ' to copy.'),
+                        $('li', { 'class': 'zalgoable' }, 'The links below the logo will show you titles in that category.')
                     ),
-                    $('p', 'There might be a few hidden features, as well.')
+                    $('p', { 'class': 'zalgoable' }, 'There might be a few hidden features, as well.')
                 );
             },
             'showCredits': function() {
                 this.replaceWith(
-                    $('h2', 'Creator'),
-                    $('p', 'Dedax'),
-                    $('h2', 'Banner'),
-                    $('p', 'Jacobmood'),
-                    $('h2', 'Icons'),
-                    $('p', 'EmojiOne 2.0'),
-                    $('h2', 'Suggestions from'),
-                    $('p', 'Elizalove, Levelup, Epilepsy, Imaginist')
+                    $('h2', { 'class': 'zalgoable' }, 'Creator'),
+                    $('p', { 'class': 'zalgoable' }, 'Dedax'),
+                    $('h2', { 'class': 'zalgoable' }, 'Banner'),
+                    $('p', { 'class': 'zalgoable' }, 'Jacobmood'),
+                    $('h2', { 'class': 'zalgoable' }, 'Icons'),
+                    $('p', { 'class': 'zalgoable' }, 'EmojiOne 2.0'),
+                    $('h2', { 'class': 'zalgoable' }, 'Suggestions from'),
+                    $('p', { 'class': 'zalgoable' }, 'Elizalove, Levelup, Epilepsy, Imaginist')
                 );
             },
             'showAllTitles': function() {
@@ -213,11 +472,11 @@
             },
             'showTitles': function(titles, forceRefresh) {
                 if (titles.length === 0) {
-                    if (this.currentTitlesShown.length === 0) {
+                    if (this.currentTitlesShown && this.currentTitlesShown.length === 0) {
                         return;
                     }
 
-                    this.replaceWith($('p', 'Nobody here but us chickens...'));
+                    this.replaceWith($('p', { 'class': 'zalgoable' }, 'Nobody here but us chickens...'));
                     this.currentTitlesShown = [];
                     return;
                 }
@@ -232,7 +491,7 @@
                     const titleSection = $('section');
                     const copySpan = $('span',
                         {
-                            'class': 'copy-span'
+                            'class': 'copy-span zalgoable'
                         },
                         $('a',
                             {
@@ -269,6 +528,11 @@
                                 popup.parentNode.removeChild(popup);
                             };
 
+                            if (contentContainer.zalgoEnabled) {
+                                splitNodeText(popup);
+                                zalgoifyNode(popup);
+                            }
+
                             copySpan.appendChild(popup);
 
                             return false;
@@ -292,7 +556,7 @@
 
                     titleSection.append(
                         $('p',
-                            $('span', { 'class': 'title' }, titleText),
+                            $('span', { 'class': 'title zalgoable' }, titleText),
                             ' ',
                             copySpan
                         )
@@ -311,12 +575,11 @@
                         description = title.description;
                     }
 
-                    titleSection.append(
-                        $('p',
-                            { 'class': 'title-description' },
-                            description
-                        )
-                    );
+                    titleSection.append($(
+                        'p',
+                        { 'class': 'title-description zalgoable' },
+                        description
+                    ));
 
                     titleSections.push(titleSection);
                 });
@@ -326,6 +589,10 @@
                 fadeChildrenOutAndThen(el, function() {
                     for (let i = 0; i < titleSections.length; ++i) {
                         el.append(titleSections[i]);
+                    }
+
+                    if (contentContainer.zalgoEnabled) {
+                        zalgoifyContent();
                     }
                 });
             },
@@ -448,9 +715,11 @@
             });
             document.body.classList.add('evert-begin');
 
+            enableZalgo(content);
+
             footer.removeChild(evertLink);
             return false;
-        }
+        };
 
         footer.appendChild(evertLink);
     }
